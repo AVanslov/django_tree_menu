@@ -58,15 +58,13 @@ class MenuItem(models.Model):
     @property
     def url(self):
         def has_parent(item, url=''):
-            print(item.parent)
-            if item.parent:
-                url += item.parent.slug + '/' + item.slug + '/'
-                # if item.parent.parent:
-                has_parent(item=item.parent, url=url)
+            if item.parent is None:
+                url = item.slug + '/' + url
             else:
                 url = item.slug + '/' + url
+                url = has_parent(item=item.parent, url=url)
             return url
-        return has_parent(self)
+        return has_parent(item=self)
 
     @property
     def level(self):
@@ -81,9 +79,6 @@ class MenuItem(models.Model):
             return level
 
         return has_parent(self)
-
-    # def get_absolute_url(self):
-    #     return reverse('menu_item_page', kwargs={"pk": self.pk})
 
     class Meta:
         constraints = [

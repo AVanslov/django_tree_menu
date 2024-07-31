@@ -15,25 +15,23 @@ def draw_menu(context, menu_name):
         Проверяет, есть ли в переданном пункте меню дочерние пункты
         и возвращает часть html кода с подпунктами переданного пункта.
         """
+        details = '<details>'
         # если есть подпункты
         if menu_item.children.all():
-            if menu_item.parent:
-                url = f'{menu_item.parent.slug}/{menu_item.slug}'
-            else:
-                url = f'{menu_item.slug}'
-            # если адрес текущей страницы совпадает с адресом данного пукта
-            # или дочерний текущего пункта
-            if context.request.path == url or any(children.slug in context.request.path for children in menu_item.children.all()):
-                if menu_item.parent:
-                    if menu_item.parent.slug in context.request.path:
-                        details = '<details open>'
-                else:
-                    details = '<details open>'
+            # если в родительском пути есть адрес текущей страницы 
+            # если в текущем пути есть адрес текущей страницы 
+            # если в одном из дочерних путей есть адрес текущей страницы
+            current_url = context.request.path
+            if any(child.slug in current_url for child in menu_item.children.all()):
+                details = '<details open>'
+            elif menu_item.slug in current_url:
+                details = '<details open>'
+
             else:
                 details = '<details>'
             item = (
                 '<div class="m-1">'
-                f'<a class="link-primary" href="{url}">'
+                f'<a class="link-primary" href="http://127.0.0.1:8000/{menu_item.url}">'
                 f'{menu_item.name}</a>'
                 + details
                 + '<summary></summary>'
@@ -41,7 +39,7 @@ def draw_menu(context, menu_name):
             end_tag = '</details></div>'
         # если нет подпунктов
         else:
-            item = f'<div><a href="{menu_item.slug}">{menu_item.name}</a>'
+            item = f'<div><a href="http://127.0.0.1:8000/{menu_item.url}">{menu_item.name}</a>'
             end_tag = '</div>'
 
         menu += item
