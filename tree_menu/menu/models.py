@@ -1,7 +1,5 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
 
 
 class Menu(models.Model):
@@ -15,18 +13,6 @@ class Menu(models.Model):
         verbose_name_plural = 'Меню'
 
 
-# class Page(models.Model):
-#     name = models.CharField(max_length=100, unique=True)
-#     url = models.URLField('Ссылка', max_length=500)
-
-#     def __str__(self):
-#         return f'{str(self.name)}, {str(self.url)}'
-
-#     class Meta:
-#         verbose_name = 'Страница'
-#         verbose_name_plural = 'Страницы'
-
-
 class MenuItem(models.Model):
     menu = models.ForeignKey(
         Menu,
@@ -34,15 +20,7 @@ class MenuItem(models.Model):
         related_name='menuitems'
     )
     name = models.CharField('Наименование', max_length=500, unique=True)
-    # page = models.ForeignKey(
-    #     Page,
-    #     on_delete=models.CASCADE,
-    #     null=True,
-    #     blank=True,
-    #     # related_name='menuitems'
-    # )
     slug = models.SlugField('Слаг', max_length=100)
-    # url = models.CharField('Ссылка', max_length=255)
     position = models.PositiveIntegerField('Позиция', default=1)
     parent = models.ForeignKey(
         'self',
@@ -89,10 +67,3 @@ class MenuItem(models.Model):
         verbose_name = 'Пункт меню'
         verbose_name_plural = 'Пункты меню'
         ordering = ('position',)
-
-
-# можно создавать неограниченое количество меню
-# в каждом меню есть какие то поля
-# у всех полей есть родительские поля
-# у главного родителя родителя нет
-# 
